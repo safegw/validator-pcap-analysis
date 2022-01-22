@@ -22,6 +22,9 @@ struct Args {
 
     #[clap(long, short)]
     tpu_addr: Option<String>,
+
+    #[clap(long)]
+    min_packets: Option<u64>,
 }
 
 #[derive(Debug, Default)]
@@ -110,6 +113,12 @@ fn main() -> Result<()> {
                 0.0
             };
 
+        if let Some(min_packets) = args.min_packets {
+            if stats.total_amount_of_packets < min_packets {
+                continue;
+            }
+        }
+
         println!("sender: {}", ip);
         println!(
             "  total traffic: {}",
@@ -134,7 +143,7 @@ fn main() -> Result<()> {
             most_occuring_fee_payers,
             most_occuring_fee_payers_share * 100.0
         );
-        println!("");
+        println!();
     }
 
     Ok(())
